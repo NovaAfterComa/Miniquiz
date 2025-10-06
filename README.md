@@ -1,1 +1,1 @@
-# Miniquiz
+# Miniquizz
