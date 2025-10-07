@@ -101,29 +101,72 @@
       transition: width 0.6s ease-in-out;
     }
     .certificate {
-      text-align: center;
-      background: #fafafa;
-      border: 2px dashed #0a66c2;
-      border-radius: 10px;
-      padding: 20px;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-    }
+  position: relative;
+  display: inline-block;
+  width: auto;
+  max-width: 100%;
+  background: white;
+  padding: 40px 30px;
+  border: 3px solid #0a66c2;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+  font-family: 'Lato', sans-serif;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
     .certificate.show {
       opacity: 1;
     }
+    .certificate::before {
+  content: "CERTIFICATO UFFICIALE";
+  display: block;
+  position: relative;
+  margin: 0 auto 12px auto;
+  background: #0a66c2;
+  color: white;
+  padding: 5px 18px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  width: fit-content;
+}
     .emoji {
-      font-size: 3.5rem;
-      margin-bottom: 12px;
+      font-size: 4rem;
+      margin-bottom: 16px;
     }
     .name {
-      font-size: 1.4rem;
+      font-size: 1.6rem;
+      font-weight: bold;
       margin: 8px 0;
     }
     .desc {
-      font-size: 1rem;
-      margin-bottom: 16px;
+      font-size: 1.05rem;
+      margin-bottom: 20px;
+      line-height: 1.6;
+      color: #333;
     }
+    .badge {
+      font-weight: bold;
+      color: #0a66c2;
+      margin-top: 12px;
+    }
+    .firma {
+      margin-top: 24px;
+      font-family: "Montserrat", sans-serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: #0a66c2;
+    }
+  .timbro {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 70px; /* prima era 90px */
+  opacity: 0.3; /* più discreto */
+  transform: rotate(-12deg);
+  z-index: 0;
+}
     .question-counter {
       position: absolute;
       top: 20px;
@@ -135,7 +178,6 @@
 </head>
 <body>
   <div class="container">
-    <!-- Slide introduttiva -->
     <div class="slide active" id="slide-intro">
       <h1>🧠 Scopri il lavoro più adatto a te</h1>
       <p><em>Powered by Dottor Dario Sorrentino</em></p>
@@ -145,7 +187,6 @@
       <button class="btn" id="btn-start">Inizia il test</button>
     </div>
 
-    <!-- Slide domande -->
     <div class="slide" id="slide-question">
       <div class="question-counter" id="question-counter">1 / 10</div>
       <h2 id="question-text">Domanda</h2>
@@ -153,7 +194,6 @@
       <div class="funfact" id="funfact-area"></div>
     </div>
 
-    <!-- Slide caricamento -->
     <div class="slide" id="slide-loading">
       <h2>Elaborazione… 🔍</h2>
       <div class="progress-bar">
@@ -161,13 +201,19 @@
       </div>
     </div>
 
-    <!-- Slide risultato -->
     <div class="slide" id="slide-result">
       <h1>🎓 Il tuo attestato</h1>
       <div class="certificate" id="cert-area">
         <div class="emoji" id="res-emoji">🙂</div>
         <div class="name" id="res-nome">Nome Cognome</div>
         <div class="desc" id="res-desc">Descrizione profilo</div>
+        <div class="firma">Dott. Dario Sorrentino</div>
+       <img
+  class="timbro"
+  src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/approved-date-stamp-design-template-51786d08e88e1b5520485c8b1271393f_screen.jpg?ts=1737195684"
+  alt="Timbro Approved"
+  crossorigin="anonymous"
+/>
       </div>
       <button class="btn" id="download-btn">Scarica certificato</button>
       <button class="btn" id="btn-linkedin" style="margin-top:12px;">Vai su LinkedIn</button>
@@ -176,116 +222,12 @@
 
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script>
-    const domande = [
-      {
-        testo: "📊 Come affronti lo stress lavorativo?",
-        risposte: [
-          { txt: "Respiro, analizzo, faccio checklist", profilo: "postoFisso" },
-          { txt: "Cerco caffè e compagno di lamentele", profilo: "sfaticato" },
-          { txt: "Nego il problema finché non esplode", profilo: "cantiere" },
-          { txt: "Mi offro volontario e poi me ne pento", profilo: "imprenditore" }
-        ],
-        funfact: "Fun fact: respirare profondamente 3 minuti aiuta a ridurre lo stress."
-      },
-      {
-        testo: "🤝 In un gruppo, tu:",
-        risposte: [
-          { txt: "Media i conflitti", profilo: "postoFisso" },
-          { txt: "Organizzo tutto con Excel", profilo: "imprenditore" },
-          { txt: "Fingo di lavorare mentre altri fanno il lavoro", profilo: "sfaticato" },
-          { txt: "Porto snack e morale", profilo: "cantiere" }
-        ],
-        funfact: "Chi porta snack spesso diventa l’amico del team."
-      },
-      {
-        testo: "💡 Cosa ti motiva di più?",
-        risposte: [
-          { txt: "Crescita personale", profilo: "postoFisso" },
-          { txt: "Soldi 💸", profilo: "imprenditore" },
-          { txt: "Riconoscimento sociale", profilo: "cantiere" },
-          { txt: "Arrivare al weekend", profilo: "sfaticato" }
-        ],
-        funfact: "Avere un ‘perché’ forte può migliorare la produttività del 40 %."
-      },
-      {
-        testo: "🚀 Progetto ambizioso: cosa fai?",
-        risposte: [
-          { txt: "Pianifico tutto nei dettagli", profilo: "postoFisso" },
-          { txt: "Chiedo aiuto", profilo: "sfaticato" },
-          { txt: "Spero che altri lo facciano per me", profilo: "cantiere" },
-          { txt: "Lavoro da solo fino a notte fonda", profilo: "imprenditore" }
-        ],
-        funfact: "Molte startup nascono da notti agitate."
-      },
-      {
-        testo: "💥 Come reagisci al fallimento?",
-        risposte: [
-          { txt: "Analizzo, correggo, riparto", profilo: "postoFisso" },
-          { txt: "Mi lamento con amici / social", profilo: "sfaticato" },
-          { txt: "Lo ignoro e vado avanti", profilo: "cantiere" },
-          { txt: "Lo vedo come lezione", profilo: "imprenditore" }
-        ],
-        funfact: "Edison trovò 10.000 modi che non funzionavano."
-      },
-      {
-        testo: "🔮 Dove ti vedi tra 5 anni?",
-        risposte: [
-          { txt: "Routine stabile", profilo: "postoFisso" },
-          { txt: "Casa & famiglia", profilo: "sfaticato" },
-          { txt: "Avventure & storie folli", profilo: "cantiere" },
-          { txt: "Capo/a di me stesso/a", profilo: "imprenditore" }
-        ],
-        funfact: "Visualizzare il futuro aiuta a realizzarlo."
-      },
-      {
-        testo: "🕒 Quali orari preferisci?",
-        risposte: [
-          { txt: "9–18 prevedibile", profilo: "postoFisso" },
-          { txt: "Flessibilità", profilo: "imprenditore" },
-          { txt: "Turni variabili", profilo: "cantiere" },
-          { txt: "Qualunque orario va bene", profilo: "sfaticato" }
-        ],
-        funfact: "I night‑owls spesso mostrano più creatività la sera."
-      },
-      {
-        testo: "💰 Se vinci 1 milione, che fai?",
-        risposte: [
-          { txt: "Lo investo", profilo: "postoFisso" },
-          { txt: "Lo deposito + casa", profilo: "sfaticato" },
-          { txt: "Viaggio tutto il mondo", profilo: "cantiere" },
-          { txt: "Avvio una startup", profilo: "imprenditore" }
-        ],
-        funfact: "Il 60 % dei milionari ha iniziato con piccoli investimenti."
-      },
-      {
-        testo: "🏢 Ambiente ideale di lavoro?",
-        risposte: [
-          { txt: "Ufficio tranquillo", profilo: "postoFisso" },
-          { txt: "Coworking creativo", profilo: "imprenditore" },
-          { txt: "Ambiente operativo / fisico", profilo: "cantiere" },
-          { txt: "Casa / smart working", profilo: "sfaticato" }
-        ],
-        funfact: "Il lavoro da remoto è cresciuto tantissimo negli ultimi anni."
-      },
-      {
-        testo: "🏆 Quanto sei competitivo?",
-        risposte: [
-          { txt: "Moderatamente", profilo: "postoFisso" },
-          { txt: "Poco, meglio rilassarmi", profilo: "sfaticato" },
-          { txt: "Molto quando serve", profilo: "cantiere" },
-          { txt: "Sempre al massimo", profilo: "imprenditore" }
-        ],
-        funfact: "Una competizione sana può aumentare la performance del 25 %."
-      }
-    ];
-
     const punteggi = {
       sfaticato: 0,
       postoFisso: 0,
       cantiere: 0,
       imprenditore: 0
     };
-
     let currentQuestion = 0;
     let nomeUtente = "";
 
@@ -325,6 +267,109 @@
       currentQuestion = 0;
       showQuestion();
     });
+
+    const domande = [
+  {
+    testo: "📊 Come affronti lo stress lavorativo?",
+    risposte: [
+      { txt: "Respiro, analizzo, faccio checklist", profilo: "postoFisso" },
+      { txt: "Cerco caffè e compagno di lamentele", profilo: "sfaticato" },
+      { txt: "Nego il problema finché non esplode", profilo: "cantiere" },
+      { txt: "Mi offro volontario e poi me ne pento", profilo: "imprenditore" }
+    ],
+    funfact: "Fun fact: respirare profondamente 3 minuti aiuta a ridurre lo stress."
+  },
+  {
+    testo: "🤝 In un gruppo, tu:",
+    risposte: [
+      { txt: "Media i conflitti", profilo: "postoFisso" },
+      { txt: "Organizzo tutto con Excel", profilo: "imprenditore" },
+      { txt: "Fingo di lavorare mentre altri fanno il lavoro", profilo: "sfaticato" },
+      { txt: "Porto snack e morale", profilo: "cantiere" }
+    ],
+    funfact: "Chi porta snack spesso diventa l’amico del team."
+  },
+  {
+    testo: "💡 Cosa ti motiva di più?",
+    risposte: [
+      { txt: "Crescita personale", profilo: "postoFisso" },
+      { txt: "Soldi 💸", profilo: "imprenditore" },
+      { txt: "Riconoscimento sociale", profilo: "cantiere" },
+      { txt: "Arrivare al weekend", profilo: "sfaticato" }
+    ],
+    funfact: "Avere un ‘perché’ forte può migliorare la produttività del 40 %."
+  },
+  {
+    testo: "🚀 Progetto ambizioso: cosa fai?",
+    risposte: [
+      { txt: "Pianifico tutto nei dettagli", profilo: "postoFisso" },
+      { txt: "Chiedo aiuto", profilo: "sfaticato" },
+      { txt: "Spero che altri lo facciano per me", profilo: "cantiere" },
+      { txt: "Lavoro da solo fino a notte fonda", profilo: "imprenditore" }
+    ],
+    funfact: "Molte startup nascono da notti agitate."
+  },
+  {
+    testo: "💥 Come reagisci al fallimento?",
+    risposte: [
+      { txt: "Analizzo, correggo, riparto", profilo: "postoFisso" },
+      { txt: "Mi lamento con amici / social", profilo: "sfaticato" },
+      { txt: "Lo ignoro e vado avanti", profilo: "cantiere" },
+      { txt: "Lo vedo come lezione", profilo: "imprenditore" }
+    ],
+    funfact: "Edison trovò 10.000 modi che non funzionavano."
+  },
+  {
+    testo: "🔮 Dove ti vedi tra 5 anni?",
+    risposte: [
+      { txt: "Routine stabile", profilo: "postoFisso" },
+      { txt: "Casa & famiglia", profilo: "sfaticato" },
+      { txt: "Avventure & storie folli", profilo: "cantiere" },
+      { txt: "Capo/a di me stesso/a", profilo: "imprenditore" }
+    ],
+    funfact: "Visualizzare il futuro aiuta a realizzarlo."
+  },
+  {
+    testo: "🕒 Quali orari preferisci?",
+    risposte: [
+      { txt: "9–18 prevedibile", profilo: "postoFisso" },
+      { txt: "Flessibilità", profilo: "imprenditore" },
+      { txt: "Turni variabili", profilo: "cantiere" },
+      { txt: "Qualunque orario va bene", profilo: "sfaticato" }
+    ],
+    funfact: "I night‑owls spesso mostrano più creatività la sera."
+  },
+  {
+    testo: "💰 Se vinci 1 milione, che fai?",
+    risposte: [
+      { txt: "Lo investo", profilo: "postoFisso" },
+      { txt: "Lo deposito + casa", profilo: "sfaticato" },
+      { txt: "Viaggio tutto il mondo", profilo: "cantiere" },
+      { txt: "Avvio una startup", profilo: "imprenditore" }
+    ],
+    funfact: "Il 60 % dei milionari ha iniziato con piccoli investimenti."
+  },
+  {
+    testo: "🏢 Ambiente ideale di lavoro?",
+    risposte: [
+      { txt: "Ufficio tranquillo", profilo: "postoFisso" },
+      { txt: "Coworking creativo", profilo: "imprenditore" },
+      { txt: "Ambiente operativo / fisico", profilo: "cantiere" },
+      { txt: "Casa / smart working", profilo: "sfaticato" }
+    ],
+    funfact: "Il lavoro da remoto è cresciuto tantissimo negli ultimi anni."
+  },
+  {
+    testo: "🏆 Quanto sei competitivo?",
+    risposte: [
+      { txt: "Moderatamente", profilo: "postoFisso" },
+      { txt: "Poco, meglio rilassarmi", profilo: "sfaticato" },
+      { txt: "Molto quando serve", profilo: "cantiere" },
+      { txt: "Sempre al massimo", profilo: "imprenditore" }
+    ],
+    funfact: "Una competizione sana può aumentare la performance del 25 %."
+  }
+];
 
     function showQuestion() {
       const q = domande[currentQuestion];
@@ -382,33 +427,110 @@
           chosen = k;
         }
       }
+
       resNome.textContent = nomeUtente;
+
       if (chosen === "sfaticato") {
         resEmoji.textContent = "😴";
-        resDesc.textContent = "Profilo Sfaticato: comfort e poco stress.";
+        resDesc.innerHTML = `
+          <strong>Appartieni al gruppo: Sfaticato</strong><br>
+          Ami il comfort, le pause caffè infinite e sognare il weekend già dal lunedì mattina.<br>
+          <span class="badge">Superpotere:</span> Schivare responsabilità come Neo in Matrix.
+        `;
       } else if (chosen === "postoFisso") {
         resEmoji.textContent = "🧘";
-        resDesc.textContent = "Profilo Lavoratore da posto fisso: stabilità e routine.";
+        resDesc.innerHTML = `
+          <strong>Appartieni al gruppo: Posto Fisso</strong><br>
+          Ami la stabilità, la routine, e l’efficienza. Hai già un Excel per la lista della spesa.<br>
+          <span class="badge">Superpotere:</span> Sopravvivere alle riunioni senza addormentarti.
+        `;
       } else if (chosen === "cantiere") {
         resEmoji.textContent = "💪";
-        resDesc.textContent = "Profilo Cantiere: ami fare, movimento e concretezza.";
+        resDesc.innerHTML = `
+          <strong>Appartieni al gruppo: Cantiere</strong><br>
+          Ti trovi meglio con un trapano in mano che con un mouse. La tua energia è contagiosa!<br>
+          <span class="badge">Superpotere:</span> Trovare una soluzione anche con lo scotch e un chiodo.
+        `;
       } else if (chosen === "imprenditore") {
         resEmoji.textContent = "🚀";
-        resDesc.textContent = "Profilo Imprenditore: creatività, rischio e iniziativa.";
+        resDesc.innerHTML = `
+          <strong>Appartieni al gruppo: Imprenditore</strong><br>
+          Hai idee brillanti ogni giorno, e sogni di rivoluzionare il mondo… o almeno la pausa pranzo.<br>
+          <span class="badge">Superpotere:</span> Lanciare un pitch anche sotto la doccia.
+        `;
       } else {
         resEmoji.textContent = "🤔";
-        resDesc.textContent = "Profilo misto: tante sfumature.";
+        resDesc.innerHTML = `
+          <strong>Profilo Misto</strong><br>
+          Hai mille sfumature e non ti lasci etichettare. Ogni giorno sei una sorpresa.<br>
+          <span class="badge">Superpotere:</span> Essere imprevedibile (anche per te stesso).
+        `;
       }
+
       certArea.classList.add("show");
 
-      downloadBtn.addEventListener("click", () => {
-        html2canvas(certArea, { backgroundColor: null, scrollY: -window.scrollY }).then(canvas => {
-          const link = document.createElement("a");
-          link.download = `attestato_${nomeUtente.replace(/\s+/g, "_")}.png`;
-          link.href = canvas.toDataURL("image/png");
-          link.click();
-        });
-      });
+downloadBtn.addEventListener("click", () => {
+  const clone = certArea.cloneNode(true);
+  clone.classList.add("show");
+  clone.style.margin = "0";
+  clone.style.padding = "0";
+  clone.style.borderRadius = "24px";
+  clone.style.background = "#ffffff";
+  clone.style.width = certArea.offsetWidth + "px";
+
+  const wrapper = document.createElement("div");
+  wrapper.style.position = "absolute";
+  wrapper.style.top = "-9999px";
+  wrapper.style.left = "0";
+  wrapper.style.display = "block";
+  wrapper.style.background = "#ffffff";
+  wrapper.style.padding = "0";
+  wrapper.style.margin = "0";
+  wrapper.style.borderRadius = "24px";
+  wrapper.style.overflow = "hidden";
+  wrapper.appendChild(clone);
+  document.body.appendChild(wrapper);
+
+  setTimeout(() => {
+    html2canvas(wrapper, {
+      backgroundColor: "#ffffff",
+      scale: 2,
+      useCORS: true
+    }).then(canvas => {
+      const roundedCanvas = document.createElement("canvas");
+      roundedCanvas.width = canvas.width;
+      roundedCanvas.height = canvas.height;
+      const ctx = roundedCanvas.getContext("2d");
+
+      const radius = 48;
+      ctx.beginPath();
+      ctx.moveTo(radius, 0);
+      ctx.lineTo(canvas.width - radius, 0);
+      ctx.quadraticCurveTo(canvas.width, 0, canvas.width, radius);
+      ctx.lineTo(canvas.width, canvas.height - radius);
+      ctx.quadraticCurveTo(canvas.width, canvas.height, canvas.width - radius, canvas.height);
+      ctx.lineTo(radius, canvas.height);
+      ctx.quadraticCurveTo(0, canvas.height, 0, canvas.height - radius);
+      ctx.lineTo(0, radius);
+      ctx.quadraticCurveTo(0, 0, radius, 0);
+      ctx.closePath();
+      ctx.clip();
+
+      ctx.drawImage(canvas, 0, 0);
+
+      const link = document.createElement("a");
+      link.download = `attestato_${nomeUtente.replace(/\s+/g, "_")}.png`;
+      link.href = roundedCanvas.toDataURL("image/png");
+      link.click();
+
+      document.body.removeChild(wrapper);
+    }).catch(err => {
+      console.error("Errore durante la generazione:", err);
+      document.body.removeChild(wrapper);
+    });
+  }, 100);
+});
+
       btnLinkedin.addEventListener("click", () => {
         window.location.href = "https://www.linkedin.com/";
       });
